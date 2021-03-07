@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventListener;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -41,9 +43,10 @@ public class ReadTest {
      */
     @Test
     public void simpleRead() {
+        String filePath = "G:\\javatest" + File.separator;
         // 有个很重要的点 DemoDataListener 不能被spring管理，要每次读取excel都要new,然后里面用到spring可以构造方法传进去
         // 写法1：
-        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        String fileName = filePath + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
         EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).sheet().doRead();
 
@@ -171,9 +174,28 @@ public class ReadTest {
      */
     @Test
     public void headerRead() {
-        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        String filePath = "G:\\javatest" + File.separator;
+        String fileName = filePath + "demo" + File.separator + "demo.xls";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet
         EasyExcel.read(fileName, DemoData.class, new DemoHeadDataListener()).sheet().doRead();
+    }
+
+    @Test
+    public void myHeaderRead() {
+        String filePath = "G:\\javatest" + File.separator;
+        String fileName = filePath + "demo" + File.separator + "demo.xls";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet
+        EasyExcel.read(fileName, MyDemoData.class, new AnalysisEventListener<MyDemoData>() {
+            @Override
+            public void invoke(MyDemoData data, AnalysisContext context) {
+                System.out.println(data);
+            }
+
+            @Override
+            public void doAfterAllAnalysed(AnalysisContext context) {
+                System.out.println(22);
+            }
+        }).sheet().headRowNumber(2).doRead();
     }
 
     /**
@@ -257,6 +279,17 @@ public class ReadTest {
             // 返回每条数据的键值对 表示所在的列 和所在列的值
             LOGGER.info("读取到数据:{}", JSON.toJSONString(data));
         }
+    }
+
+    @Test
+    public void mySyncHeaderRead() {
+        String filePath = "G:\\javatest" + File.separator;
+        String fileName = filePath + "demo" + File.separator + "demo.xls";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet
+        List<MyDemoData> myDemoData = EasyExcel.read(fileName).head(MyDemoData.class).headRowNumber(0).sheet().doReadSync();
+        myDemoData.forEach(item -> {
+            System.out.println(item);
+        });
     }
 
     /**

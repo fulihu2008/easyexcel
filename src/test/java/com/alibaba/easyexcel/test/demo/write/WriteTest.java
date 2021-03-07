@@ -50,19 +50,20 @@ public class WriteTest {
      */
     @Test
     public void simpleWrite() {
+        String filePath = "G:\\javatest";
         // 写法1
         String fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         // 如果这里想使用03 则 传入excelType参数即可
-        EasyExcel.write(fileName, DemoData.class).sheet("模板").doWrite(data());
+        //EasyExcel.write(fileName, DemoData.class).sheet("模板").doWrite(data());
 
         // 写法2
-        fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
+        fileName = filePath + File.separator + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写
         ExcelWriter excelWriter = null;
         try {
-            excelWriter = EasyExcel.write(fileName, DemoData.class).build();
-            WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
+            excelWriter = EasyExcel.write(fileName, MyDemoData.class).build();
+            WriteSheet writeSheet = EasyExcel.writerSheet("模板").needHead(false).build();
             excelWriter.write(data(), writeSheet);
         } finally {
             // 千万别忘记finish 会帮忙关闭流
@@ -130,7 +131,8 @@ public class WriteTest {
      */
     @Test
     public void complexHeadWrite() {
-        String fileName = TestFileUtil.getPath() + "complexHeadWrite" + System.currentTimeMillis() + ".xlsx";
+        String filePath = "G:\\javatest";
+        String fileName = filePath + File.separator + "complexHeadWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, ComplexHeadData.class).sheet("模板").doWrite(data());
     }
@@ -146,8 +148,9 @@ public class WriteTest {
      */
     @Test
     public void repeatedWrite() {
+        String filePath = "G:\\javatest";
         // 方法1 如果写到同一个sheet
-        String fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
+        String fileName = filePath + File.separator + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
         ExcelWriter excelWriter = null;
         try {
             // 这里 需要指定写用哪个class去写
@@ -168,7 +171,7 @@ public class WriteTest {
         }
 
         // 方法2 如果写到不同的sheet 同一个对象
-        fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
+        fileName = filePath + File.separator + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
         try {
             // 这里 指定文件
             excelWriter = EasyExcel.write(fileName, DemoData.class).build();
@@ -188,7 +191,7 @@ public class WriteTest {
         }
 
         // 方法3 如果写到不同的sheet 不同的对象
-        fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
+        fileName = filePath + File.separator + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
         try {
             // 这里 指定文件
             excelWriter = EasyExcel.write(fileName).build();
@@ -270,10 +273,11 @@ public class WriteTest {
      */
     @Test
     public void templateWrite() {
-        String templateFileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
-        String fileName = TestFileUtil.getPath() + "templateWrite" + System.currentTimeMillis() + ".xlsx";
+        //String templateFileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        String templateFileName = "G:\\javatest" + File.separator + "template.xlsx";
+        String fileName = "G:\\javatest" + File.separator + "templateWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
-        EasyExcel.write(fileName, DemoData.class).withTemplate(templateFileName).sheet().doWrite(data());
+        EasyExcel.write(fileName, DemoData.class).withTemplate(templateFileName).sheet().needHead(false).doWrite(data());
     }
 
     /**
